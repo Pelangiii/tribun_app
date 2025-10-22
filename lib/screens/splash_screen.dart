@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:tribun_app/utils/app_colors.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -16,42 +17,45 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override 
   void initState() {
-   super.initState();
+    super.initState();
     _animationController = AnimationController(
       duration: Duration(seconds: 2),
-      vsync: this,
+      vsync: this
     );
 
     _fadeAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
+      begin: 0.0,
+      end: 1.0
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
+
     _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
+      begin: 0.0,
+      end: 1.0
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.elasticOut,
+      curve: Curves.elasticInOut,
     ));
 
     _animationController.forward();
 
-    // // Navigate to home after 3 seconds
-    //  Future.delayed(Duration(seconds: 3), () {
-    //   Get.offAllNamed(Routes.home);
-    // });
+    // navigate to home screen after 3 second
+    Future.delayed(Duration(seconds: 3), () {
+      // Get.offAllNamed(Routes);
+     
+    });
   }
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-
+  
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
@@ -73,17 +77,18 @@ class _SplashScreenState extends State<SplashScreen>
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: Colors.black.withValues(alpha: 0.2), // biar hitamnya ga terlalu pekat -> shadow
                             blurRadius: 20,
-                            offset: Offset(0, 10),
-                          ),
-                        ],
+                            offset: Offset(0, 10)
+                          )
+                        ]
                       ),
                       child: Icon(
                         Icons.newspaper,
                         size: 60,
                         color: AppColors.primary,
                       ),
+                      
                     ),
                     SizedBox(height: 30),
                     Text(
@@ -97,16 +102,16 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Stay Updated with Latest News',
+                      'Stay Updated With Latest News',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white.withValues( alpha: 0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                     SizedBox(height: 50),
                     CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -115,5 +120,5 @@ class _SplashScreenState extends State<SplashScreen>
         ),
       ),
     );
-   }
- }
+  }
+}
