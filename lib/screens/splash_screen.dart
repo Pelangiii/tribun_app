@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tribun_app/utils/app_colors.dart';
+
+import '../routes/app_pages.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // navigate to home screen after 3 second
     Future.delayed(Duration(seconds: 3), () {
-      // Get.offAllNamed(Routes);
+      Get.offAllNamed(Routes.HOME);
      
     });
   }
