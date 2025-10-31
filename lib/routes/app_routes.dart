@@ -9,6 +9,8 @@ abstract class Routes {
   static const SPLASH = _paths.SPLASH;
   static const HOME = _paths.HOME;
   static const NEWS_DETAIL = _paths.NEWS_DETAIL;
+
+
 }
 
 abstract class _paths {
@@ -16,4 +18,6 @@ abstract class _paths {
   static const SPLASH = '/splash';
   static const HOME = '/home';
   static const NEWS_DETAIL = '/news_detail';
+
+
 }

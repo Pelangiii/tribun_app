@@ -4,6 +4,7 @@ import 'package:tribun_app/screens/home_screen.dart';
 import 'package:tribun_app/screens/news_detail_screen.dart';
 import 'package:tribun_app/screens/splash_screen.dart';
 
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -25,5 +26,7 @@ class AppPages {
       name: _paths.NEWS_DETAIL,
       page: () => NewsDetailScreen(),
     ),
+
+    
   ];
 }

@@ -5,123 +5,127 @@ import 'package:tribun_app/utils/app_colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NewsCard extends StatelessWidget {
-    final NewsArticles articles;
+  final NewsArticles articles;
   final VoidCallback onTap;
 
   const NewsCard({super.key, required this.articles, required this.onTap});
 
-
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shadowColor: AppColors.cardShadow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: AppColors.cardShadow,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //img
             if (articles.urlToImage != null)
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
                 child: CachedNetworkImage(
                   imageUrl: articles.urlToImage!,
-                  height: 200,
-                  width: double.infinity,
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    height: 200,
+                    width: 100,
+                    height: 100,
                     color: AppColors.divider,
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    height: 200,
+                    width: 10,
+                    height: 10,
                     color: AppColors.divider,
-                    child: Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 40,
-                        color: AppColors.textHint,
-                      ),
+                    child: Image.asset(
+                      'assets/images/Noimage.png',
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  ),
+                ),
               ),
-              Padding(
-                padding: EdgeInsets.all(16),
+
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // untuk source news and dtae
+                    if (articles.source?.name != null)
+                      Text(
+                        articles.source!.name!,
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                    const SizedBox(height: 4),
+
+                    // Judul
+                    if (articles.title != null)
+                      Text(
+                        articles.title!,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                          height: 1.3,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                    const SizedBox(height: 8),
+
+                    
                     Row(
                       children: [
-                        if (articles.source?.name != null) ...[
-                           Expanded(
-                            child: 
-                            Text(
-                              articles.source!.name!,
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            )
-                            ),
-                            SizedBox(width: 8), 
-                        ],
-                        //time stamp
+                        if (articles.source?.name != null)
+                          const SizedBox(width: 8),
                         if (articles.publishedAt != null)
-                        Text(
-                          timeago.format(DateTime.parse(articles.publishedAt!)),
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 12,
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.access_time,
+                                size: 14,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                timeago.format(
+                                  DateTime.parse(articles.publishedAt!),
+                                ),
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
-                        )
-                       
+                        const Spacer(),
+                        Icon(Icons.more_horiz, color: AppColors.textSecondary),
                       ],
                     ),
-                    SizedBox(height: 12),
-                    //title
-                    if (articles.title != null)
-                    Text(
-                      articles.title!,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                        height: 1.3
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 8),
-                    //description
-                    if (articles.description != null)
-                    Text(
-                      articles.description!,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 14,
-                        height: 1.4,
-
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )
                   ],
                 ),
-              )
+              ),
+            ),
           ],
         ),
       ),

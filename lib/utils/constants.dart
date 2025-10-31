@@ -12,13 +12,13 @@ class Constants {
 
   //List of categories
   static const List<String> categories =[
-    'general',
-    'technology',
-    'business',
-    'sports',
-    'health',
-    'science',
-    'entertainment'
+    'All',
+    'Technology',
+    'Business',
+    'Sports',
+    'Health',
+    'Science',
+    'Entertainment'
   ];
 
   //conutries

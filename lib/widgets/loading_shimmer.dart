@@ -1,169 +1,123 @@
+import 'dart:math'; // Fix pi, jangan lupa!
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tribun_app/utils/app_colors.dart';
 
-class LoadingShimmer extends StatefulWidget {
-  const LoadingShimmer({super.key});
+class MinimalLoadingIndicator extends StatefulWidget {
+  const MinimalLoadingIndicator({super.key});
 
   @override
-  State<LoadingShimmer> createState() => _LoadingShimmerState();
+  State<MinimalLoadingIndicator> createState() => _MinimalLoadingIndicatorState();
 }
 
-class _LoadingShimmerState extends State<LoadingShimmer> 
-  with SingleTickerProviderStateMixin{
-    late AnimationController _animationController;
-    late Animation<double> _animation;
+class _MinimalLoadingIndicatorState extends State<MinimalLoadingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<Color?> _colorAnimation;
+  late Animation<double> _opacityAnimation;
 
-    @override
-    void initState() {
-      super.initState();
-      _animationController = AnimationController(
-        duration: Duration(milliseconds: 1500),
-        vsync: this,
-         )..repeat();
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500), // Lebih lambat biar smooth kayak video
+    )..repeat(reverse: true);
 
-         _animation = Tween<double>(
-          begin: -1.0,
-          end: 2.0,
-         ).animate(CurvedAnimation(
-          parent: _animationController , 
-          curve: Curves.easeInOut
-          ));
-    }
+    _scaleAnimation = Tween<double>(begin: 0.7, end: 1.2).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
 
-    @override
-    void dispose() {
-      _animationController.dispose();
-      super.dispose();
-    }
+    _colorAnimation = ColorTween(
+      begin: const Color.fromARGB(255, 20, 134, 227).withOpacity(0.4),
+      end: const Color.fromARGB(255, 37, 98, 205).withOpacity(0.8), // Full biru biar match gambar
+    ).animate(_controller);
+
+    _opacityAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.all(16),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: EdgeInsets.only(bottom: 16),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusDirectional.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //image shimer
-              AnimatedBuilder(
-                animation: _animation, 
-                builder: (context, child){
-                  return Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          AppColors.divider,
-                          AppColors.divider.withValues(alpha: 0.5),
-                          AppColors.divider,
-                        ],
-                        stops: [
-                          0.0,
-                          0.5,
-                          1.0
-                        ],
-                        transform: GradientRotation(_animation.value * 3.14159),
-
-                      )
-                    ),
-                  );
-                }
-                ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //source shimer
-                      AnimatedBuilder(
-                        animation: _animation,
-                        builder: (context, child) {
-                          return Container(
-                            height: 12,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: AppColors.divider
-                            ),
-                          );
-                        },
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Center( 
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center, // Ini yang bikin teks & spinner tepat tengah
+              children: [
+                // Spinner arc biru dengan glow (custom painter biar arc presisi kayak gambar)
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: _colorAnimation.value ?? Colors.transparent,
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 0),
                       ),
-                      SizedBox(height: 12,),
-
-                      AnimatedBuilder(
-                        animation: _animation, 
-                        builder: (context, child) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 16,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: AppColors.divider,
-                                ),
-                              ),
-                              SizedBox(height: 8,),
-                              Container(
-                                height: 16,
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: AppColors.divider,
-                                ),
-                              )
-                            ],
-                          );
-                        },
-                        
-                        ),
-                        SizedBox(height: 12),
-                        // deskripsi shimer
-                        AnimatedBuilder(
-                          animation: _animation,
-                          builder: (context, child) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 14,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7),
-                                    color: AppColors.divider,
-                                  ),
-                                ),
-                                SizedBox(height: 6,),
-                                Container(
-                                  height: 14,
-                                  width: MediaQuery.of(context).size.width * 0.5,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7),
-                                    color: AppColors.divider,
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                        )
                     ],
                   ),
-                )
-            ],
+                  child: CustomPaint(
+                    painter: ArcSpinnerPainter(
+                      color: _colorAnimation.value ?? Colors.blue,
+                      opacity: _opacityAnimation.value,
+                      progress: (_controller.value * 0.75 + 0.25) % 1.0, // Arc dari 25% ke 100% biar semi-lengkung
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
         );
-      }
-      );
+      },
+    );
   }
+}
+
+// Custom Painter buat arc spinner biru (tetep sama)
+class ArcSpinnerPainter extends CustomPainter {
+  final Color color;
+  final double opacity;
+  final double progress;
+
+  ArcSpinnerPainter({
+    required this.color,
+    required this.opacity,
+    required this.progress,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withOpacity(opacity)
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - paint.strokeWidth / 2;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2, // Mulai dari atas
+      2 * pi * progress, // Panjang arc dinamis (semi-lengkung berputar)
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
